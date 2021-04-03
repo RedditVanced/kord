@@ -74,6 +74,7 @@ subprojects {
 
     val compileKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
     compileKotlin.kotlinOptions.jvmTarget = Jvm.target
+    compileKotlin.kotlinOptions.useIR = true
 
     tasks.withType<Test> {
         useJUnitPlatform {

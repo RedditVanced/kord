@@ -76,6 +76,9 @@ subprojects {
 
         js(IR) {
             nodejs()
+            browser {
+
+            }
         }
 
         sourceSets {

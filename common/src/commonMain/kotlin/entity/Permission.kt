@@ -12,6 +12,8 @@ import kotlinx.serialization.encoding.Encoder
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
+import kotlin.js.JsName
+import kotlin.jvm.JvmName
 
 
 @Serializable(with = Permissions.Companion::class)
@@ -115,6 +117,7 @@ fun Permissions(permissions: Iterable<Permission>) = Permissions {
 
 
 @JvmName("PermissionWithIterable")
+@JsName("PermissionWithIterable")
 fun Permissions(permissions: Iterable<Permissions>) = Permissions {
     permissions.forEach { +it }
 }

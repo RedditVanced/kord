@@ -13,6 +13,8 @@ import kotlin.RequiresOptIn.Level
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
+import kotlin.jvm.JvmName
+import kotlin.js.JsName
 
 /**
  * Some intents are defined as "Privileged" due to the sensitive nature of the data and cannot be used by Kord without enabling them.
@@ -194,6 +196,7 @@ fun Intents(intents: Iterable<Intents>) = Intents {
 fun Intents(value: String) = Intents(DiscordBitSet(value))
 
 @JvmName("IntentsWithIterable")
+@JsName("IntentsWithIterable")
 fun Intents(intents: Iterable<Intent>) = Intents {
     intents.forEach { +it }
 }

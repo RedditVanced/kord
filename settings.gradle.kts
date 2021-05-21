@@ -15,8 +15,8 @@ pluginManagement {
 }
 
 rootProject.name = "kord"
-include("gateway")
+//include("gateway")
 include("common")
-include("rest")
-include("core")
+//include("rest")
+//include("core")
 

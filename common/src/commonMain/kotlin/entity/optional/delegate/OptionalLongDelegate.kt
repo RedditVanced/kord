@@ -6,6 +6,8 @@ import dev.kord.common.entity.optional.value
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty
+import kotlin.jvm.JvmName
+import kotlin.js.JsName
 
 fun KMutableProperty0<OptionalLong>.delegate(): ReadWriteProperty<Any?, Long?> =
     object : ReadWriteProperty<Any?, Long?> {
@@ -23,6 +25,7 @@ fun KMutableProperty0<OptionalLong>.delegate(): ReadWriteProperty<Any?, Long?> =
     }
 
 @JvmName("provideNullableDelegate")
+@JsName("provideNullableLongDelegate")
 fun KMutableProperty0<OptionalLong?>.delegate(): ReadWriteProperty<Any?, Long?> =
     object : ReadWriteProperty<Any?, Long?> {
 

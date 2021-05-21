@@ -28,7 +28,7 @@ object Dependencies {
     const val `kotlinx-serialization-json` =
         "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.kotlinxSerialization}"
     const val `kotlinx-coroutines` = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.kotlinxCoroutines}"
-    const val `kotlinx-atomicfu` = "org.jetbrains.kotlinx:atomicfu-jvm:${Versions.atomicFu}"
+    const val `kotlinx-atomicfu` = "org.jetbrains.kotlinx:atomicfu:${Versions.atomicFu}"
     const val `kotlinx-datetime` = "org.jetbrains.kotlinx:kotlinx-datetime:${Versions.dateTime}"
 
     const val `kotlin-logging` = "io.github.microutils:kotlin-logging:${Versions.kotlinLogging}"

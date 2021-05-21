@@ -15,6 +15,8 @@ import kotlinx.serialization.encoding.Encoder
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
+import kotlin.jvm.JvmName
+import kotlin.js.JsName
 
 /**
  * Represents [a message sent in a channel within Discord](https://discord.com/developers/docs/resources/channel#message-object).
@@ -378,6 +380,7 @@ fun MessageFlags(flags: Iterable<MessageFlag>) = MessageFlags {
 
 
 @JvmName("MessageFlagsWithIterable")
+@JsName("MessageFlagsWithIterable")
 fun MessageFlags(flags: Iterable<MessageFlags>) = MessageFlags {
     flags.forEach { +it }
 }

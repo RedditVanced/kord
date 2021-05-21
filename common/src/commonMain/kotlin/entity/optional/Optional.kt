@@ -10,6 +10,9 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
+import kotlin.jvm.JvmName
+import kotlin.js.JsName
+
 /**
  * Represents a value that encapsulates all [three possible states of a value in the Discord API](https://discord.com/developers/docs/reference#nullable-and-optional-resource-fields).
  * Specifically:
@@ -142,6 +145,7 @@ sealed class Optional<out T> {
          * Returns an [Optional] that is either [value] on a non-null [value], or [Null] on `null`.
          */
         @JvmName("invokeNullable")
+        @JsName("invokeNullable")
         operator fun <T : Any> invoke(value: T?): Optional<T?> = when (value) {
             null -> Null()
             else -> Value(value)
@@ -241,6 +245,7 @@ inline fun <E : Any, T : Any> Optional<E>.map(mapper: (E) -> T): Optional<T> = w
 
 @Suppress("UNCHECKED_CAST")
 @JvmName("mapNullableOptional")
+@JsName("mapNullableOptional")
 inline fun <E : Any, T : Any> Optional<E?>.map(mapper: (E) -> T): Optional<T?> = when (this) {
     is Missing, is Null<*> -> this as Optional<T>
     is Value -> Value(mapper(value!!))
@@ -274,6 +279,7 @@ inline fun <E : Any> Optional<E>.mapSnowflake(mapper: (E) -> Snowflake): Optiona
 }
 
 @JvmName("mapNullableSnowflake")
+@JsName("mapNullableSnowflake")
 inline fun <E : Any> Optional<E?>.mapSnowflake(mapper: (E) -> Snowflake): OptionalSnowflake? = when (this) {
     is Missing, is Null<*> -> OptionalSnowflake.Missing
     is Value -> OptionalSnowflake.Value(mapper(value!!))

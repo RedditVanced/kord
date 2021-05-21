@@ -8,6 +8,8 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlin.jvm.JvmName
+import kotlin.js.JsName
 
 /**
  * Represents a value that encapsulate [the optional and value state of a Long in the Discord API](https://discord.com/developers/docs/reference#nullable-and-optional-resource-fields).

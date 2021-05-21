@@ -8,6 +8,8 @@ import kotlin.properties.Delegates
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty
+import kotlin.jvm.JvmName
+import kotlin.js.JsName
 
 
 fun KMutableProperty0<OptionalSnowflake>.delegate(): ReadWriteProperty<Any?, Snowflake?> =
@@ -25,6 +27,7 @@ fun KMutableProperty0<OptionalSnowflake>.delegate(): ReadWriteProperty<Any?, Sno
     }
 
 @JvmName("delegateOptional")
+@JsName("delegateOptional")
 fun KMutableProperty0<OptionalSnowflake?>.delegate(): ReadWriteProperty<Any?, Snowflake?> =
     object : ReadWriteProperty<Any?, Snowflake?> {
 

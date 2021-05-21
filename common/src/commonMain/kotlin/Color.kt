@@ -60,5 +60,3 @@ private fun rgb(red: Int, green: Int, blue: Int): Int {
             (green and 0xFF shl 8) or
             (blue and 0xFF) shl 0
 }
-
-val java.awt.Color.kColor get() = Color(rgb)

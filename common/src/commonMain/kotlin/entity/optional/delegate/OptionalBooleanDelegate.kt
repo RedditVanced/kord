@@ -6,6 +6,8 @@ import dev.kord.common.entity.optional.value
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty
+import kotlin.jvm.JvmName
+import kotlin.js.JsName
 
 fun KMutableProperty0<OptionalBoolean>.delegate(): ReadWriteProperty<Any?, Boolean?> =
     object : ReadWriteProperty<Any?, Boolean?> {
@@ -23,6 +25,7 @@ fun KMutableProperty0<OptionalBoolean>.delegate(): ReadWriteProperty<Any?, Boole
     }
 
 @JvmName("provideNullableDelegate")
+@JsName("provideNullableBooleanDelegate")
 fun <T> KMutableProperty0<OptionalBoolean?>.delegate(): ReadWriteProperty<T, Boolean?> =
     object : ReadWriteProperty<T, Boolean?> {
 

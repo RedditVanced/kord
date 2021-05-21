@@ -7,8 +7,12 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import java.math.BigInteger
-import java.nio.ByteBuffer
+import com.ionspin.kotlin.bignum.integer.BigInteger
+import com.ionspin.kotlin.bignum.integer.Sign
+import io.ktor.utils.io.core.Buffer
+import io.ktor.utils.io.core.withBuffer
+import io.ktor.utils.io.core.writeFully
+import io.ktor.utils.io.core.readFully
 import kotlin.math.max
 import kotlin.math.min
 
@@ -25,9 +29,15 @@ class DiscordBitSet(internal var data: LongArray) {
 
     val value: String
         get() {
-            val buffer = ByteBuffer.allocate(data.size * Long.SIZE_BYTES)
-            buffer.asLongBuffer().put(data.reversedArray())
-            return BigInteger(buffer.array()).toString()
+            val size = data.size * Long.SIZE_BYTES
+            val bytes = withBuffer(size) {
+                writeFully(data.reversedArray())
+                ByteArray(size).also { bytes ->
+                    readFully(bytes)
+                }
+            }
+            
+            return BigInteger.fromByteArray(bytes, Sign.POSITIVE).toString()
         }
 
     val size: Int
@@ -120,7 +130,7 @@ fun DiscordBitSet(value: String): DiscordBitSet {
         return DiscordBitSet(longArrayOf(value.toULong().toLong()))
     }
 
-    val bytes = BigInteger(value).toByteArray()
+    val bytes = BigInteger.parseString(value, 10).toByteArray()
 
     val longSize = (bytes.size / Long.SIZE_BYTES) + 1
     val destination = LongArray(longSize)

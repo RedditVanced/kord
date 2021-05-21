@@ -6,6 +6,8 @@ import dev.kord.common.entity.optional.value
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty
+import kotlin.js.JsName
+import kotlin.jvm.JvmName
 
 fun KMutableProperty0<OptionalInt>.delegate(): ReadWriteProperty<Any?, Int?> = object : ReadWriteProperty<Any?, Int?> {
 
@@ -22,6 +24,7 @@ fun KMutableProperty0<OptionalInt>.delegate(): ReadWriteProperty<Any?, Int?> = o
 }
 
 @JvmName("provideNullableDelegate")
+@JsName("provideNullableIntDelegate")
 fun KMutableProperty0<OptionalInt?>.delegate(): ReadWriteProperty<Any?, Int?> = object : ReadWriteProperty<Any?, Int?> {
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Int? {

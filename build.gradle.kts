@@ -20,7 +20,7 @@ buildscript {
 }
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version Versions.kotlin
+    id("org.jetbrains.kotlin.multiplatform") version Versions.kotlin
     id("org.jetbrains.dokka") version "1.4.30"
     id("org.ajoberstar.git-publish") version "2.1.3"
 
@@ -36,16 +36,16 @@ repositories {
     mavenLocal()
 }
 
-dependencies {
-    api(Dependencies.jdk8)
-}
-
 group = Library.group
 version = Library.version
 
+kotlin {
+    jvm()
+}
+
 subprojects {
     apply(plugin = "java")
-    apply(plugin = "kotlin")
+    apply(plugin = "kotlin-multiplatform")
     apply(plugin = "kotlinx-serialization")
     apply(plugin = "maven-publish")
     apply(plugin = "kotlinx-atomicfu")
@@ -61,28 +61,57 @@ subprojects {
         maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
     }
 
-    dependencies {
-        api(Dependencies.jdk8)
-        api(Dependencies.`kotlinx-serialization`)
-        implementation(Dependencies.`kotlinx-serialization-json`)
-        api(Dependencies.`kotlinx-coroutines`)
-        implementation(Dependencies.`kotlinx-atomicfu`)
-        implementation(Dependencies.`kotlin-logging`)
+    kotlin {
+        jvm {
+            compilations.all {
+                kotlinOptions {
+                    jvmTarget = Jvm.target
+                }
+            }
+    
+            tasks {
+                withType<Test> {
+                    useJUnitPlatform()
+                }
+            }
+        }
 
-        testImplementation(Dependencies.`kotlin-test`)
-        testImplementation(Dependencies.junit5)
-        testImplementation(Dependencies.`junit-jupiter-api`)
-        testRuntimeOnly(Dependencies.`junit-jupiter-engine`)
-        testImplementation(Dependencies.`kotlinx-coroutines-test`)
-        testRuntimeOnly(Dependencies.`kotlin-reflect`)
-        testRuntimeOnly(Dependencies.sl4j)
+        js(IR) {
+            nodejs()
+        }
+
+        sourceSets {
+            all {
+                languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+            }
+
+            commonMain {
+                dependencies {
+                    api(Dependencies.`kotlinx-serialization`)
+                    implementation(Dependencies.`kotlinx-serialization-json`)
+                    api(Dependencies.`kotlinx-coroutines`)
+                    implementation(Dependencies.`kotlinx-atomicfu`)
+                    implementation(Dependencies.`kotlin-logging`)
+                }
+            }
+        }
     }
 
-    val apiCheck = tasks.getByName("apiCheck")
-    apiCheck.onlyIf { Library.isRelease }
+    dependencies {
+        //testImplementation(Dependencies.`kotlin-test`)
+        //testImplementation(Dependencies.junit5)
+        //testImplementation(Dependencies.`junit-jupiter-api`)
+        //testRuntimeOnly(Dependencies.`junit-jupiter-engine`)
+        //testImplementation(Dependencies.`kotlinx-coroutines-test`)
+        //testRuntimeOnly(Dependencies.`kotlin-reflect`)
+        //testRuntimeOnly(Dependencies.sl4j)
+    }
 
-    val compileKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
-    compileKotlin.kotlinOptions.jvmTarget = Jvm.target
+    //val apiCheck = tasks.getByName("apiCheck")
+    //apiCheck.onlyIf { Library.isRelease }
+
+    //val compileKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
+    //compileKotlin.kotlinOptions.jvmTarget = Jvm.target
 
 
     tasks.withType<Test> {
@@ -112,10 +141,10 @@ subprojects {
     }
 
 
-    val sourcesJar by tasks.registering(Jar::class) {
-        archiveClassifier.set("sources")
-        from(sourceSets.main.get().allSource)
-    }
+    //val sourcesJar by tasks.registering(Jar::class) {
+      //  archiveClassifier.set("sources")
+        //from(sourceSets.main.get().allSource)
+    //}
 
     val dokkaJar by tasks.registering(Jar::class) {
         group = JavaBasePlugin.DOCUMENTATION_GROUP
@@ -137,7 +166,7 @@ subprojects {
                 artifactId = "kord-${project.name}"
                 version = Library.version
 
-                artifact(sourcesJar.get())
+                //artifact(sourcesJar.get())
                 artifact(dokkaJar.get())
 
                 pom {

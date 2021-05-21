@@ -1,3 +1,16 @@
+package json.test_cases
+
+
+//language=JSON
+const val CUSTOM_EMOJI = """
+{
+  "id": "41771983429993937",
+  "name": "LUL"
+}
+"""
+
+//language=JSON
+const val EMOJI = """
 {
   "id": "41771983429993937",
   "name": "LUL",
@@ -12,3 +25,13 @@
   "managed": false,
   "animated": false
 }
+
+"""
+
+//language=JSON
+const val STANDARD_EMOJI = """
+{
+  "id": null,
+  "name": "🔥"
+}
+"""

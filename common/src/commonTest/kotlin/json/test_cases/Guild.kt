@@ -1,3 +1,8 @@
+package json.test_cases
+
+
+//language=JSON
+const val GUILD = """
 {
   "id": "197038439483310086",
   "name": "Discord Testers",
@@ -41,3 +46,34 @@
   "public_updates_channel_id": "281283303326089216",
   "nsfw": true
 }
+"""
+
+//language=JSON
+const val GUILD_MEMBER = """
+{
+  "nick": "NOT API SUPPORT",
+  "roles": [],
+  "joined_at": "2015-04-26T06:26:56.936000+00:00",
+  "deaf": false,
+  "mute": false
+}
+"""
+
+//language=JSON
+const val PARTIAL_GUILD = """
+{
+  "id": "80351110224678912",
+  "name": "1337 Krew",
+  "icon": "8342729096ea3675442027381ff50dfe",
+  "owner": true,
+  "permissions": 36953089
+}
+"""
+
+//language=JSON
+const val UNAVAILABLE_GUILD = """
+{
+  "id": "41771983423143937",
+  "unavailable": true
+}
+"""

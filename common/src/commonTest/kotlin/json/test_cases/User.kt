@@ -1,3 +1,7 @@
+package json.test_cases
+
+//language=JSON
+const val USER = """
 {
   "id": "80351110224678912",
   "username": "Nelly",
@@ -8,3 +12,4 @@
   "flags": 64,
   "premium_type": 1
 }
+"""

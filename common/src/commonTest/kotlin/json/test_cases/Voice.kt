@@ -1,3 +1,7 @@
+package json.test_cases
+
+//language=JSON
+const val VOICE_STATE = """
 {
   "channel_id": "157733188964188161",
   "user_id": "80351110224678912",
@@ -8,3 +12,4 @@
   "self_mute": true,
   "suppress": false
 }
+"""

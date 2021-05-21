@@ -4,6 +4,7 @@ import dev.kord.common.entity.optional.Optional
 import dev.kord.common.entity.optional.OptionalSnowflake
 import dev.kord.common.entity.optional.orEmpty
 import kotlinx.serialization.*
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.*
 import kotlinx.serialization.encoding.*
@@ -159,147 +160,157 @@ sealed class AuditLogChangeKey<T>(val name: String, val serializer: KSerializer<
     class Unknown(name: String) : AuditLogChangeKey<JsonElement>(name, JsonElement.serializer())
 
     @SerialName("name")
-    object Name : AuditLogChangeKey<String>("name", serializer())
+    object Name : AuditLogChangeKey<String>("name", String.serializer())
 
     @SerialName("icon_hash")
-    object IconHash : AuditLogChangeKey<String>("icon_hash", serializer())
+    object IconHash : AuditLogChangeKey<String>("icon_hash", String.serializer())
 
     @SerialName("splash_hash")
-    object SplashHash : AuditLogChangeKey<String>("splash_hash", serializer())
+    object SplashHash : AuditLogChangeKey<String>("splash_hash", String.serializer())
 
     @SerialName("owner_id")
-    object OwnerId : AuditLogChangeKey<Snowflake>("owner_id", serializer())
+    object OwnerId : AuditLogChangeKey<Snowflake>("owner_id", Snowflake.serializer())
 
     @SerialName("region")
-    object Region : AuditLogChangeKey<String>("region", serializer())
+    object Region : AuditLogChangeKey<String>("region", String.serializer())
 
     @SerialName("afk_channel_id")
-    object AfkChannelId : AuditLogChangeKey<Snowflake>("afk_channel_id", serializer())
+    object AfkChannelId : AuditLogChangeKey<Snowflake>("afk_channel_id", Snowflake.serializer())
 
     @SerialName("afk_timeout")
-    object AfkTimeout : AuditLogChangeKey<Int>("afk_timeout", serializer())
+    object AfkTimeout : AuditLogChangeKey<Int>("afk_timeout", Int.serializer())
 
     @SerialName("mfa_level")
-    object MFALevel : AuditLogChangeKey<CommonMFALevel>("mfa_level", serializer())
+    object MFALevel : AuditLogChangeKey<CommonMFALevel>("mfa_level", CommonMFALevel.serializer())
 
     @SerialName("verification_level")
-    object VerificationLevel : AuditLogChangeKey<CommonVerificationLevel>("verification_level", serializer())
+    object VerificationLevel :
+        AuditLogChangeKey<CommonVerificationLevel>("verification_level", CommonVerificationLevel.serializer())
 
     @SerialName("explicit_content_filter")
     object ExplicitContentFilter :
-        AuditLogChangeKey<CommonExplicitContentFilter>("explicit_content_filter", serializer())
+        AuditLogChangeKey<CommonExplicitContentFilter>(
+            "explicit_content_filter",
+            CommonExplicitContentFilter.serializer()
+        )
 
     @SerialName("default_message_notifications")
     object DefaultMessageNotificationLevel :
-        AuditLogChangeKey<CommonDefaultMessageNotificationLevel>("default_message_notifications", serializer())
+        AuditLogChangeKey<CommonDefaultMessageNotificationLevel>(
+            "default_message_notifications",
+            CommonDefaultMessageNotificationLevel.serializer()
+        )
 
     @SerialName("vanity_url_code")
-    object VanityUrlCode : AuditLogChangeKey<String>("vanity_url_code", serializer())
+    object VanityUrlCode : AuditLogChangeKey<String>("vanity_url_code", String.serializer())
 
     @SerialName("\$add")
-    object Add : AuditLogChangeKey<List<DiscordPartialRole>>("\$add", serializer())
+    object Add : AuditLogChangeKey<List<DiscordPartialRole>>("\$add", ListSerializer(DiscordPartialRole.serializer()))
 
     @SerialName("\$remove")
-    object Remove : AuditLogChangeKey<List<DiscordPartialRole>>("\$remove", serializer())
+    object Remove :
+        AuditLogChangeKey<List<DiscordPartialRole>>("\$remove", ListSerializer(DiscordPartialRole.serializer()))
 
     @SerialName("prune_delete_days")
-    object PruneDeleteDays : AuditLogChangeKey<Int>("prune_delete_days", serializer())
+    object PruneDeleteDays : AuditLogChangeKey<Int>("prune_delete_days", Int.serializer())
 
     @SerialName("widget_enabled")
-    object WidgetEnabled : AuditLogChangeKey<Boolean>("widget_enabled", serializer())
+    object WidgetEnabled : AuditLogChangeKey<Boolean>("widget_enabled", Boolean.serializer())
 
     @SerialName("widget_channel_id")
-    object WidgetChannelId : AuditLogChangeKey<Snowflake>("widget_channel_id", serializer())
+    object WidgetChannelId : AuditLogChangeKey<Snowflake>("widget_channel_id", Snowflake.serializer())
 
     @SerialName("system_channel_id")
-    object SystemChannelId : AuditLogChangeKey<Snowflake>("system_channel_id", serializer())
+    object SystemChannelId : AuditLogChangeKey<Snowflake>("system_channel_id", Snowflake.serializer())
 
     @SerialName("position")
-    object Position : AuditLogChangeKey<Int>("position", serializer())
+    object Position : AuditLogChangeKey<Int>("position", Int.serializer())
 
     @SerialName("topic")
-    object Topic : AuditLogChangeKey<String>("topic", serializer())
+    object Topic : AuditLogChangeKey<String>("topic", String.serializer())
 
     @SerialName("bitrate")
-    object Bitrate : AuditLogChangeKey<Int>("bitrate", serializer())
+    object Bitrate : AuditLogChangeKey<Int>("bitrate", Int.serializer())
 
     @SerialName("permission_overwrites")
-    object PermissionOverwrites : AuditLogChangeKey<List<Overwrite>>("permission_overwrites", serializer())
+    object PermissionOverwrites :
+        AuditLogChangeKey<List<Overwrite>>("permission_overwrites", ListSerializer(Overwrite.serializer()))
 
     @SerialName("nsfw")
-    object Nsfw : AuditLogChangeKey<Boolean>("nsfw", serializer())
+    object Nsfw : AuditLogChangeKey<Boolean>("nsfw", Boolean.serializer())
 
     @SerialName("application_id")
-    object ApplicationId : AuditLogChangeKey<Snowflake>("application_id", serializer())
+    object ApplicationId : AuditLogChangeKey<Snowflake>("application_id", Snowflake.serializer())
 
     @SerialName("rate_limit_per_user")
-    object RateLimitPerUser : AuditLogChangeKey<Int>("rate_limit_per_user", serializer())
+    object RateLimitPerUser : AuditLogChangeKey<Int>("rate_limit_per_user", Int.serializer())
 
     @SerialName("permissions")
-    object Permissions : AuditLogChangeKey<CommonPermissions>("permissions", serializer())
+    object Permissions : AuditLogChangeKey<CommonPermissions>("permissions", CommonPermissions.serializer())
 
     @SerialName("color")
-    object Color : AuditLogChangeKey<CommonColor>("color", serializer())
+    object Color : AuditLogChangeKey<CommonColor>("color", CommonColor.serializer())
 
     @SerialName("hoist")
-    object Hoist : AuditLogChangeKey<Boolean>("hoist", serializer())
+    object Hoist : AuditLogChangeKey<Boolean>("hoist", Boolean.serializer())
 
     @SerialName("mentionable")
-    object Mentionable : AuditLogChangeKey<Boolean>("mentionable", serializer())
+    object Mentionable : AuditLogChangeKey<Boolean>("mentionable", Boolean.serializer())
 
     @SerialName("allow")
-    object Allow : AuditLogChangeKey<CommonPermissions>("allow", serializer())
+    object Allow : AuditLogChangeKey<CommonPermissions>("allow", CommonPermissions.serializer())
 
     @SerialName("deny")
-    object Deny : AuditLogChangeKey<CommonPermissions>("deny", serializer())
+    object Deny : AuditLogChangeKey<CommonPermissions>("deny", CommonPermissions.serializer())
 
     @SerialName("code")
-    object Code : AuditLogChangeKey<String>("code", serializer())
+    object Code : AuditLogChangeKey<String>("code", String.serializer())
 
     @SerialName("channel_id")
-    object ChannelId : AuditLogChangeKey<Snowflake>("channel_id", serializer())
+    object ChannelId : AuditLogChangeKey<Snowflake>("channel_id", Snowflake.serializer())
 
     @SerialName("inviter_id")
-    object InviterId : AuditLogChangeKey<Snowflake>("inviter_id", serializer())
+    object InviterId : AuditLogChangeKey<Snowflake>("inviter_id", Snowflake.serializer())
 
     @SerialName("max_uses")
-    object MaxUses : AuditLogChangeKey<Int>("max_uses", serializer())
+    object MaxUses : AuditLogChangeKey<Int>("max_uses", Int.serializer())
 
     @SerialName("uses")
-    object Uses : AuditLogChangeKey<Int>("uses", serializer())
+    object Uses : AuditLogChangeKey<Int>("uses", Int.serializer())
 
     @SerialName("max_age")
-    object MaxAges : AuditLogChangeKey<Int>("max_age", serializer())
+    object MaxAges : AuditLogChangeKey<Int>("max_age", Int.serializer())
 
     @SerialName("temporary")
-    object Temporary : AuditLogChangeKey<Boolean>("temporary", serializer())
+    object Temporary : AuditLogChangeKey<Boolean>("temporary", Boolean.serializer())
 
     @SerialName("deaf")
-    object Deaf : AuditLogChangeKey<Boolean>("deaf", serializer())
+    object Deaf : AuditLogChangeKey<Boolean>("deaf", Boolean.serializer())
 
     @SerialName("mute")
-    object Mute : AuditLogChangeKey<Boolean>("mute", serializer())
+    object Mute : AuditLogChangeKey<Boolean>("mute", Boolean.serializer())
 
     @SerialName("nick")
-    object Nick : AuditLogChangeKey<String>("nick", serializer())
+    object Nick : AuditLogChangeKey<String>("nick", String.serializer())
 
     @SerialName("avatar_hash")
-    object AvatarHash : AuditLogChangeKey<String>("avatar_hash", serializer())
+    object AvatarHash : AuditLogChangeKey<String>("avatar_hash", String.serializer())
 
     @SerialName("id")
-    object Id : AuditLogChangeKey<Snowflake>("id", serializer())
+    object Id : AuditLogChangeKey<Snowflake>("id", Snowflake.serializer())
 
     @SerialName("type")
-    object Type : AuditLogChangeKey<ChannelType>("type", serializer())
+    object Type : AuditLogChangeKey<ChannelType>("type", ChannelType.serializer())
 
     @SerialName("enable_emoticons")
-    object EnableEmoticons : AuditLogChangeKey<Boolean>("enable_emoticons", serializer())
+    object EnableEmoticons : AuditLogChangeKey<Boolean>("enable_emoticons", Boolean.serializer())
 
     @SerialName("expire_behavior")
-    object ExpireBehavior : AuditLogChangeKey<IntegrationExpireBehavior>("expire_behavior", serializer())
+    object ExpireBehavior :
+        AuditLogChangeKey<IntegrationExpireBehavior>("expire_behavior", IntegrationExpireBehavior.serializer())
 
     @SerialName("expire_grace_period")
-    object ExpireGracePeriod : AuditLogChangeKey<Int>("expire_grace_period", serializer())
+    object ExpireGracePeriod : AuditLogChangeKey<Int>("expire_grace_period", Int.serializer())
 
 
     internal class Serializer<T>(val type: KSerializer<T>) : KSerializer<AuditLogChangeKey<T>> {

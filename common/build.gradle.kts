@@ -1,18 +1,18 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 
-sourceSets {
-    val samples by creating {
-        compileClasspath += sourceSets["main"].output
-        runtimeClasspath += sourceSets["main"].output
-    }
-}
-
-configurations {
-    val samplesImplementation by getting {
-        extendsFrom(configurations["implementation"])
-    }
-}
+//sourceSets {
+//    val samples by creating {
+//        compileClasspath += sourceSets["main"].output
+//        runtimeClasspath += sourceSets["main"].output
+//    }
+//}
+//
+//configurations {
+//    val samplesImplementation by getting {
+//        extendsFrom(configurations["implementation"])
+//    }
+//}
 
 kotlin {
     sourceSets {
@@ -23,16 +23,5 @@ kotlin {
                 implementation("io.ktor:ktor-io:1.5.4")
             }
         }
-    }
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = Jvm.target
-        freeCompilerArgs = listOf(
-                CompilerArguments.coroutines,
-                CompilerArguments.time,
-                CompilerArguments.optIn
-        )
     }
 }

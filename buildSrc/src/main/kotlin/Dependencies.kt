@@ -34,6 +34,10 @@ object Dependencies {
     const val `kotlin-logging` = "io.github.microutils:kotlin-logging:${Versions.kotlinLogging}"
 
     const val `kotlin-test` = "org.jetbrains.kotlin:kotlin-test:${Versions.kotlinTest}"
+    const val `kotlin-test-common` = "org.jetbrains.kotlin:kotlin-test-common:${Versions.kotlinTest}"
+    const val `kotlin-test-annotations-common` = "org.jetbrains.kotlin:kotlin-test-annotations-common:${Versions.kotlinTest}"
+    const val `kotlin-test-junit5` = "org.jetbrains.kotlin:kotlin-test-junit5:${Versions.kotlinTest}"
+    const val `kotlin-test-js` = "org.jetbrains.kotlin:kotlin-test-js:${Versions.kotlinTest}"
     const val junit5 = "org.jetbrains.kotlin:kotlin-test-junit5:${Versions.kotlinTest}"
     const val `kotlinx-coroutines-test` =
         "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.kotlinxCoroutinesTest}"

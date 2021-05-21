@@ -1,0 +1,152 @@
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
+package json
+
+import dev.kord.common.entity.DiscordChannel
+import dev.kord.common.entity.optional.value
+import kotlinx.serialization.json.Json
+import json.test_cases.*
+import kotlin.js.JsName
+import kotlin.test.Test
+
+class ChannelTest {
+
+    @JsName("dmChannel")
+    @Test
+    fun `DMChannel serialization`() {
+        val channel = Json.decodeFromString(DiscordChannel.serializer(), DM_CHANNEL)
+
+        with(channel) {
+            lastMessageId.value!!.asString shouldBe "3343820033257021450"
+            type.value shouldBe 1
+            id.asString shouldBe "319674150115610528"
+            recipients.value!!.size shouldBe 1
+            with(recipients.value!!.first()) {
+                username shouldBe "test"
+                discriminator shouldBe "9999"
+                id.asString shouldBe "82198898841029460"
+                avatar shouldBe "33ecab261d4681afa4d85a04691c4a01"
+            }
+        }
+
+    }
+
+    @JsName("channelCategory")
+    @Test
+    fun `ChannelCategory serialization`() {
+        val channel = Json.decodeFromString(DiscordChannel.serializer(), CHANNEL_CATEGORY)
+
+        with(channel) {
+            permissionOverwrites.value shouldBe emptyList()
+            name.value shouldBe "Test"
+            nsfw.asNullable shouldBe false
+            position.value shouldBe 0
+            guildId.value?.asString shouldBe "290926798629997250"
+            type.value shouldBe 4
+            id.asString shouldBe "399942396007890945"
+        }
+    }
+
+    @JsName("groupDmChannel")
+    @Test
+    fun `GroupDMChannel serialization`() {
+        val channel = Json.decodeFromString(DiscordChannel.serializer(), GROUP_DM_CHANNEL)
+
+        with(channel) {
+            name.value shouldBe "Some test channel"
+            icon.value shouldBe null
+            recipients.value!!.size shouldBe 2
+            with(recipients.value!!.first()) {
+                username shouldBe "test"
+                discriminator shouldBe "9999"
+                id.asString shouldBe "82198898841029460"
+                avatar shouldBe "33ecab261d4681afa4d85a04691c4a01"
+            }
+            with(recipients.value!![1]) {
+                username shouldBe "test2"
+                discriminator shouldBe "9999"
+                id.asString shouldBe "82198810841029460"
+                avatar shouldBe "33ecab261d4681afa4d85a10691c4a01"
+            }
+            lastMessageId.value?.asString shouldBe "3343820033257021450"
+            type.value shouldBe 3
+            id.asString shouldBe "319674150115710528"
+            ownerId.value?.asString shouldBe "82198810841029460"
+        }
+    }
+
+    @JsName("guildNewChannel")
+    @Test
+    fun `GuildNewChannel serialization`() {
+        val channel = Json.decodeFromString(DiscordChannel.serializer(), GUILD_NEWS_CHANNEL)
+
+        with(channel) {
+            id.asString shouldBe "41771983423143937"
+            guildId.value!!.asString shouldBe "41771983423143937"
+            name.value shouldBe "important-news"
+            type.value shouldBe 5
+            position.value shouldBe 6
+            permissionOverwrites.value!! shouldBe emptyList()
+            nsfw.value shouldBe true
+            topic.value shouldBe "Rumors about Half Life 3"
+            lastMessageId.value?.asString shouldBe "155117677105512449"
+            parentId.value?.asString shouldBe "399942396007890945"
+        }
+    }
+
+    @JsName("guildTextChannel")
+    @Test
+    fun `GuildTextChannel serialization`() {
+        val channel = Json.decodeFromString(DiscordChannel.serializer(), GUILD_TEXT_CHANNEL)
+
+        with(channel) {
+            id.asString shouldBe "41771983423143937"
+            guildId.value!!.asString shouldBe "41771983423143937"
+            name.value shouldBe "general"
+            type.value shouldBe 0
+            position.asNullable!! shouldBe 6
+            permissionOverwrites.value shouldBe emptyList()
+            rateLimitPerUser.asNullable shouldBe 2
+            nsfw.value shouldBe true
+            topic.value shouldBe "24/7 chat about how to gank Mike #2"
+            lastMessageId.value?.asString shouldBe "155117677105512449"
+            parentId.value?.asString shouldBe "399942396007890945"
+        }
+    }
+
+    @JsName("GuildVoiceChannel")
+    @Test
+    fun `GuildVoiceChannel serialization`() {
+        val channel = Json.decodeFromString(DiscordChannel.serializer(), GUILD_VOICE_CHANNEL)
+
+        with(channel) {
+            id.asString shouldBe "155101607195836416"
+            guildId.value!!.asString shouldBe "41771983423143937"
+            name.value shouldBe "ROCKET CHEESE"
+            type.value shouldBe 2
+            nsfw.asNullable shouldBe false
+            position.asNullable shouldBe 5
+            permissionOverwrites.value!! shouldBe emptyList()
+            bitrate.value shouldBe 64000
+            userLimit.value shouldBe 0
+            parentId.value?.asString shouldBe null
+        }
+    }
+
+    @JsName("storeChannel")
+    @Test
+    fun `StoreChannel serialization`() {
+        val channel = Json.decodeFromString(DiscordChannel.serializer(), STORE_CHANNEL)
+
+        with(channel) {
+            id.asString shouldBe "41771983423143937"
+            guildId.value!!.asString shouldBe "41771983423143937"
+            name.value shouldBe "buy dota-2"
+            type.value shouldBe 6
+            position.asNullable shouldBe 0
+            permissionOverwrites.value!! shouldBe emptyList()
+            nsfw.asNullable shouldBe false
+            parentId shouldBe null
+        }
+    }
+}

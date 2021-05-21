@@ -4,7 +4,6 @@ import org.apache.commons.codec.binary.Base64
 
 buildscript {
     repositories {
-        jcenter()
         mavenCentral()
         maven(url = "https://plugins.gradle.org/m2/")
     }
@@ -57,7 +56,6 @@ subprojects {
 
     repositories {
         mavenCentral()
-        jcenter()
         maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
     }
 
@@ -68,7 +66,7 @@ subprojects {
                     jvmTarget = Jvm.target
                 }
             }
-    
+
             tasks {
                 withType<Test> {
                     useJUnitPlatform()
@@ -82,7 +80,10 @@ subprojects {
 
         sourceSets {
             all {
-                languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+                languageSettings.useExperimentalAnnotation(ExperimentalAnnotations.optIn)
+                languageSettings.useExperimentalAnnotation(ExperimentalAnnotations.coroutines)
+                languageSettings.useExperimentalAnnotation(ExperimentalAnnotations.stdLib)
+                languageSettings.useExperimentalAnnotation(ExperimentalAnnotations.time)
             }
 
             commonMain {
@@ -92,6 +93,31 @@ subprojects {
                     api(Dependencies.`kotlinx-coroutines`)
                     implementation(Dependencies.`kotlinx-atomicfu`)
                     implementation(Dependencies.`kotlin-logging`)
+                }
+            }
+
+            commonTest {
+                dependencies {
+                    implementation(Dependencies.`kotlin-test-common`)
+                    implementation(Dependencies.`kotlin-test-annotations-common`)
+                }
+            }
+
+            val jvmTest by getting {
+                dependencies {
+                    implementation(Dependencies.`kotlin-test`)
+                    implementation(Dependencies.`kotlin-test-junit5`)
+                    implementation(Dependencies.junit5)
+                    implementation(Dependencies.`junit-jupiter-api`)
+                    runtimeOnly(Dependencies.`junit-jupiter-engine`)
+                    implementation(Dependencies.`kotlinx-coroutines-test`)
+                    runtimeOnly(Dependencies.sl4j)
+                }
+            }
+
+            val jsTest by getting {
+                dependencies {
+                    implementation(Dependencies.`kotlin-test-js`)
                 }
             }
         }
@@ -142,8 +168,8 @@ subprojects {
 
 
     //val sourcesJar by tasks.registering(Jar::class) {
-      //  archiveClassifier.set("sources")
-        //from(sourceSets.main.get().allSource)
+    //  archiveClassifier.set("sources")
+    //from(sourceSets.main.get().allSource)
     //}
 
     val dokkaJar by tasks.registering(Jar::class) {

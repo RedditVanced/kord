@@ -27,6 +27,8 @@ import me.uport.knacl.nacl
 import mu.KotlinLogging
 import java.nio.ByteBuffer
 import kotlin.coroutines.CoroutineContext
+import kotlin.properties.Delegates
+import kotlin.time.Duration
 
 private val defaultVoiceGatewayLogger = KotlinLogging.logger {}
 
@@ -37,7 +39,9 @@ data class VoiceOptions(
     val selfDeaf: Boolean = false
 )
 
-@ObsoleteCoroutinesApi
+private val LOG = KotlinLogging.logger { }
+
+@OptIn(ObsoleteCoroutinesApi::class)
 class DefaultVoiceGateway(val gateway: Gateway, val client: HttpClient, val voiceOpitons: VoiceOptions) : VoiceGateway {
 
     private lateinit var udp: ConnectedDatagramSocket
@@ -52,9 +56,13 @@ class DefaultVoiceGateway(val gateway: Gateway, val client: HttpClient, val voic
 
     private val sequence = atomic<Short>(0)
 
-    internal var ssrc: Int? = null
+    internal var ssrc by Delegates.notNull<Int>()
+    private lateinit var network: NetworkAddress
 
     private lateinit var secretKey: List<Int>
+
+    var ready: Boolean = false
+        private set
 
 
     private val jsonParser = Json {
@@ -81,14 +89,16 @@ class DefaultVoiceGateway(val gateway: Gateway, val client: HttpClient, val voic
         val voiceReadyEvent = establishConnection(voiceStateUpdateVoice, serverUpdateEvent)
 
 
-        val ssrc = voiceReadyEvent.ssrc
-        val network = NetworkAddress(voiceReadyEvent.ip,voiceReadyEvent.port)
+        ssrc = voiceReadyEvent.ssrc
+        network = NetworkAddress(voiceReadyEvent.ip, voiceReadyEvent.port)
         udp = aSocket(ActorSelectorManager(Dispatchers.IO)).udp().connect(network)
 
+        LOG.debug { "Discovering ip address" }
         val externalNetwork = ipDiscovery(
             ssrc,
             network
         )
+        LOG.debug { "Discovered network: $externalNetwork" }
 
 
         val sessionDescriptionWaiter: Deferred<SessionDescription> = waitFor()
@@ -101,7 +111,9 @@ class DefaultVoiceGateway(val gateway: Gateway, val client: HttpClient, val voic
         )
 
         val sessionDescription = sessionDescriptionWaiter.await()
+        LOG.debug { "Got session descriptor => voice gateway is ready" }
         secretKey = sessionDescription.secretKey
+        ready = true
 
     }
 
@@ -139,13 +151,13 @@ class DefaultVoiceGateway(val gateway: Gateway, val client: HttpClient, val voic
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + Dispatchers.Default
 
-    private suspend fun sendUpdateVoiceStatus(voiceOpitons: VoiceOptions) {
+    private suspend fun sendUpdateVoiceStatus(voiceOptions: VoiceOptions) {
         gateway.send(
             UpdateVoiceStatus(
-                guildId = voiceOpitons.guildId,
-                channelId = voiceOpitons.channelId,
-                selfDeaf = voiceOpitons.selfDeaf,
-                selfMute = voiceOpitons.selfMute
+                guildId = voiceOptions.guildId,
+                channelId = voiceOptions.channelId,
+                selfDeaf = voiceOptions.selfDeaf,
+                selfMute = voiceOptions.selfMute
             )
         )
     }
@@ -167,14 +179,28 @@ class DefaultVoiceGateway(val gateway: Gateway, val client: HttpClient, val voic
 
     }
 
-    private suspend fun ipDiscovery(ssrc: Int, address: NetworkAddress): NetworkAddress {
+    private suspend fun ipDiscovery(ssrc: Int, address: NetworkAddress, tries: Int = 0): NetworkAddress {
         val buffer = ByteBuffer.allocate(70)
             .putShort(1)
             .putShort(70)
             .putInt(ssrc)
-        val datagram = Datagram(ByteReadPacket(buffer), address)
+            .array()
+        val datagram = Datagram(ByteReadPacket(buffer, 0, buffer.size), address)
         udp.send(datagram)
-        val received = udp.receive().packet
+        LOG.debug { "waiting for ip frame" }
+        val received = try {
+            withTimeout(Duration.seconds(1)) { udp.incoming.receive().packet }
+        } catch (e: TimeoutCancellationException) {
+            if (tries < 5) {
+                val nextTry = tries + 1
+                LOG.warn { "Ip discovery failed first try. Retrying $nextTry/5" }
+                return ipDiscovery(ssrc, address, nextTry)
+            } else {
+                throw e
+            }
+        }
+
+        LOG.debug { "got ip frame" }
         received.discardExact(4)
         val ip = received.readBytes(received.remaining.toInt() - 2).toString().trim()
         val port = received.readShortLittleEndian().toInt()
@@ -220,7 +246,7 @@ class DefaultVoiceGateway(val gateway: Gateway, val client: HttpClient, val voic
         val encrypted = nacl.secretbox.seal(data, nonce, secretKey.map { it.toByte() }.toByteArray())
         defaultVoiceGatewayLogger.trace { "Gateway >>> packet" }
 
-        udp.send(Datagram(ByteReadPacket(currentRtpHeader + encrypted), udp.localAddress))
+        udp.send(Datagram(ByteReadPacket(currentRtpHeader + encrypted), network))
     }
 
     private suspend inline fun <reified T> waitForTCPGatewayAsync(): Deferred<T> = async {
@@ -238,13 +264,15 @@ class DefaultVoiceGateway(val gateway: Gateway, val client: HttpClient, val voic
             when (it) {
                 is Frame.Binary, is Frame.Text -> read(it)
                 else -> { /*ignore*/
+                    LOG.debug { "Received unexpected frame: $it" }
                 }
             }
         }
 
     }
+
     private suspend fun read(frame: Frame) {
-        val json =  String(frame.data, Charsets.UTF_8)
+        val json = String(frame.data, Charsets.UTF_8)
 
         try {
             defaultVoiceGatewayLogger.trace { "Gateway <<< $json" }

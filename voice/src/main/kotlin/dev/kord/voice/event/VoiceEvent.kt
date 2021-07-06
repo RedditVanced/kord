@@ -40,11 +40,12 @@ sealed class VoiceEvent {
 
                                 VoiceOpCode.Speaking -> deserializedEvent =
                                     decodeSerializableElement(descriptor, index, VoiceSpeakingEvent.serializer())
-                                VoiceOpCode.SessionDescription -> decodeSerializableElement(
+                                VoiceOpCode.SessionDescription -> deserializedEvent = decodeSerializableElement(
                                     descriptor,
                                     index,
                                     SessionDescription.serializer()
                                 )
+                                VoiceOpCode.Heartbeat -> decodeLongElement(descriptor, index)
                             }
                         }
                     }

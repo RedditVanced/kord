@@ -1,6 +1,5 @@
 package dev.kord.voice
 
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 
 val SILENCE_BYTES = byteArrayOf(0xFC.toByte(), 0xFF.toByte(), 0xFE.toByte())

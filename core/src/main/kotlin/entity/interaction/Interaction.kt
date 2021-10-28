@@ -276,41 +276,41 @@ public class ResolvedObjects(
 
 public sealed class OptionValue<out T>(public val value: T, public val focused: Boolean) {
 
-    public class RoleOptionValue(value: Role, focused: Boolean = false) : OptionValue<Role>(value, focused) {
+    public class RoleOptionValue @JvmOverloads constructor(value: Role, focused: Boolean = false) : OptionValue<Role>(value, focused) {
         override fun toString(): String = "RoleOptionValue(value=$value)"
     }
 
-    public open class UserOptionValue(value: User, focused: Boolean = false) : OptionValue<User>(value, focused) {
+    public open class UserOptionValue @JvmOverloads constructor(value: User, focused: Boolean = false) : OptionValue<User>(value, focused) {
         override fun toString(): String = "UserOptionValue(value=$value)"
     }
 
-    public class MemberOptionValue(value: Member, focused: Boolean = false) : UserOptionValue(value, focused) {
+    public class MemberOptionValue @JvmOverloads constructor(value: Member, focused: Boolean = false) : UserOptionValue(value, focused) {
         override fun toString(): String = "MemberOptionValue(value=$value)"
     }
 
-    public class ChannelOptionValue(value: ResolvedChannel, focused: Boolean = false) :
+    public class ChannelOptionValue @JvmOverloads constructor(value: ResolvedChannel, focused: Boolean = false) :
         OptionValue<ResolvedChannel>(value, focused) {
         override fun toString(): String = "ChannelOptionValue(value=$value)"
     }
 
-    public class IntOptionValue(value: Long, focused: Boolean = false) : OptionValue<Long>(value, focused) {
+    public class IntOptionValue @JvmOverloads constructor(value: Long, focused: Boolean = false) : OptionValue<Long>(value, focused) {
         override fun toString(): String = "IntOptionValue(value=$value)"
     }
 
 
-    public class NumberOptionValue(value: Double, focused: Boolean = false) : OptionValue<Double>(value, focused) {
+    public class NumberOptionValue @JvmOverloads constructor(value: Double, focused: Boolean = false) : OptionValue<Double>(value, focused) {
         override fun toString(): String = "DoubleOptionValue(value=$value)"
     }
 
-    public class StringOptionValue(value: String, focused: Boolean = false) : OptionValue<String>(value, focused) {
+    public class StringOptionValue @JvmOverloads constructor(value: String, focused: Boolean = false) : OptionValue<String>(value, focused) {
         override fun toString(): String = "StringOptionValue(value=$value)"
     }
 
-    public class BooleanOptionValue(value: Boolean, focused: Boolean = false) : OptionValue<Boolean>(value, focused) {
+    public class BooleanOptionValue @JvmOverloads constructor(value: Boolean, focused: Boolean = false) : OptionValue<Boolean>(value, focused) {
         override fun toString(): String = "BooleanOptionValue(value=$value)"
     }
 
-    public class MentionableOptionValue(value: Entity, focused: Boolean = false) : OptionValue<Entity>(value, focused) {
+    public class MentionableOptionValue @JvmOverloads constructor(value: Entity, focused: Boolean = false) : OptionValue<Entity>(value, focused) {
         override fun toString(): String = "MentionableOptionValue(value=$value)"
     }
 

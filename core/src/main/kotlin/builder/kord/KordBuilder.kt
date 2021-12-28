@@ -184,10 +184,8 @@ public class KordBuilder(public val token: String) {
      * Requests the gateway info for the bot, or throws a [KordInitializationException] when something went wrong.
      */
     private suspend fun HttpClient.getGatewayInfo(): BotGatewayResponse {
-        val response = get<HttpResponse>("${Route.baseUrl}${Route.GatewayBotGet.path}") {
-            header(Authorization, "Bot $token")
-        }
-        val responseBody = response.readText()
+        val response = get("${Route.baseUrl}${Route.GatewayBotGet.path}")
+        val responseBody = response.bodyAsText()
         if (response.isError) {
             val message = buildString {
                 append("Something went wrong while initializing Kord")

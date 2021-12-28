@@ -51,10 +51,10 @@ fun VersionCatalogBuilder.kotlinx() {
 }
 
 fun VersionCatalogBuilder.ktor() {
-    val ktor = version("ktor", "1.6.7")
+    val ktor = version("ktor", "2.0.0-beta-1")
 
-    alias("ktor-client-json").to("io.ktor", "ktor-client-json").versionRef(ktor)
-    alias("ktor-client-serialization").to("io.ktor", "ktor-client-serialization").versionRef(ktor)
+    alias("ktor-client-json").to("io.ktor", "ktor-serialization-kotlinx-json").versionRef(ktor)
+    alias("ktor-client-content-negotiation").to("io.ktor", "ktor-client-content-negotiation").versionRef(ktor)
 
     alias("ktor-client-cio").to("io.ktor", "ktor-client-cio").versionRef(ktor)
 
@@ -64,6 +64,8 @@ fun VersionCatalogBuilder.ktor() {
     alias("ktor-client-mock").to("io.ktor", "ktor-client-mock").versionRef(ktor)
 
     alias("ktor-network").to("io.ktor", "ktor-network").versionRef(ktor)
+
+    bundle("ktor-client-serialization", listOf("ktor-client-content-negotiation", "ktor-client-json"))
 }
 
 fun VersionCatalogBuilder.common() {

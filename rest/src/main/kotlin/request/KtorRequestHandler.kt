@@ -11,18 +11,15 @@ import dev.kord.rest.ratelimit.Reset
 import dev.kord.rest.ratelimit.Total
 import dev.kord.rest.ratelimit.consume
 import dev.kord.rest.route.optional
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.request.forms.MultiPartFormDataContent
-import io.ktor.client.request.request
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.HttpStatement
-import io.ktor.client.statement.readText
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.*
+import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
+import io.ktor.client.statement.*
 import io.ktor.content.TextContent
-import io.ktor.http.ContentType
-import io.ktor.http.content.PartData
-import io.ktor.http.contentType
-import io.ktor.http.takeFrom
+import io.ktor.http.*
+import io.ktor.http.content.*
 import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
@@ -61,7 +58,7 @@ class KtorRequestHandler(
             response
         }
 
-        val body = response.readText()
+        val body = response.bodyAsText()
         return when {
             response.isRateLimit -> {
                 logger.debug { response.logString(body) }
@@ -82,7 +79,7 @@ class KtorRequestHandler(
         }
     }
 
-    private suspend fun <B : Any, R> HttpClient.createRequest(request: Request<B, R>) = request<HttpStatement> {
+    private suspend fun <B : Any, R> HttpClient.createRequest(request: Request<B, R>) = prepareRequest {
         method = request.route.method
         headers.appendAll(request.headers)
 
@@ -97,11 +94,11 @@ class KtorRequestHandler(
                 val requestBody = request.body ?: return@run
                 val json = parser.encodeToString(requestBody.strategy, requestBody.body)
                 logger.debug { request.logString(json) }
-                this.body = TextContent(json, ContentType.Application.Json)
+                setBody(TextContent(json, ContentType.Application.Json))
             }
             is MultipartRequest -> {
                 val content = request.data
-                this.body = MultiPartFormDataContent(content)
+                setBody(MultiPartFormDataContent(content))
                 logger.debug {
                     val json = content.filterIsInstance<PartData.FormItem>()
                         .firstOrNull { it.name == "payload_json" }?.value

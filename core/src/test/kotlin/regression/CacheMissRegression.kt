@@ -24,13 +24,11 @@ import dev.kord.rest.request.RequestHandler
 import dev.kord.rest.route.Route
 import dev.kord.rest.service.RestClient
 import io.ktor.client.HttpClient
+import io.ktor.client.request.*
 import io.ktor.client.request.forms.MultiPartFormDataContent
-import io.ktor.client.request.request
-import io.ktor.client.statement.HttpStatement
-import io.ktor.client.statement.readText
+import io.ktor.client.statement.*
 import io.ktor.content.TextContent
-import io.ktor.http.ContentType
-import io.ktor.http.takeFrom
+import io.ktor.http.*
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -40,6 +38,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Test
@@ -83,7 +82,7 @@ object FakeGateway : Gateway {
 class CrashingHandler(val client: HttpClient, override val token: String) : RequestHandler {
     override suspend fun <B : Any, R> handle(request: Request<B, R>): R {
         if (request.route != Route.CurrentUserGet) throw IllegalStateException("shouldn't do a request")
-        val response = client.request<HttpStatement> {
+        val response = client.prepareRequest {
             method = request.route.method
             headers.appendAll(request.headers)
 
@@ -102,12 +101,12 @@ class CrashingHandler(val client: HttpClient, override val token: String) : Requ
                             "payload_json",
                             parser.encodeToString(it.strategy as SerializationStrategy<Any>, it.body)
                         )
-                        this.body = MultiPartFormDataContent(request.data)
+                        setBody(MultiPartFormDataContent(request.data))
                     }
 
                     is JsonRequest<*, *> -> {
                         val json = parser.encodeToString(it.strategy as SerializationStrategy<Any>, it.body)
-                        this.body = TextContent(json, ContentType.Application.Json)
+                        setBody(TextContent(json, ContentType.Application.Json))
                     }
                 }
             }
@@ -115,7 +114,7 @@ class CrashingHandler(val client: HttpClient, override val token: String) : Requ
 
         }.execute()
 
-        return request.route.mapper.deserialize(parser, response.readText())
+        return request.route.mapper.deserialize(parser, response.bodyAsText())
     }
 }
 
@@ -124,7 +123,7 @@ class CacheMissingRegressions {
     lateinit var kord: Kord
 
     @BeforeTest
-    fun setup() = runBlockingTest { //TODO, move this over to entity supplier tests instead, eventually.
+    fun setup() = runTest { //TODO, move this over to entity supplier tests instead, eventually.
         val token = System.getenv("KORD_TEST_TOKEN")
         val resources = ClientResources(
             token,

@@ -105,9 +105,6 @@ public open class Optional<out T> private constructor() {
 
             public operator fun <T : Any> invoke(): Null<T> = constantNull
         }
-
-        fun x() {
-        }
     }
 
     /**

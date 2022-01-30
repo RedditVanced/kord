@@ -40,14 +40,13 @@ import kotlinx.datetime.toInstant
  * if none are presented like other `getX` functions. Instead, the flow will be empty.
  */
 public class CacheEntitySupplier(private val kord: Kord) : EntitySupplier {
+
     /**
-     *
      * The Cache this [CacheEntitySupplier] operates on.
      *
      * Shorthand for [kord.cache][Kord.cache].
-     *
      */
-    private val cache: DataCache get() = kord.cache
+    private inline val cache: DataCache get() = kord.cache
 
     /**
      *  Returns a [Flow] of [Channel]s fetched from cache.
@@ -476,9 +475,8 @@ public class CacheEntitySupplier(private val kord: Kord) : EntitySupplier {
             idEq(GuildScheduledEventData::guildId, guildId)
         }.asFlow().map { GuildScheduledEvent(it, kord) }
 
-    override fun toString(): String {
-        return "CacheEntitySupplier(cache=$cache)"
-    }
+
+    override fun toString(): String = "CacheEntitySupplier(cache=$cache)"
 }
 
 
